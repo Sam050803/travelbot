@@ -3,6 +3,8 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     app_name: str = "Travelbot"
     debug: bool = False
+    host: str = "0.0.0.0"
+    port: int = 8000
     database_url: str
     openai_api_key: str
     openai_model: str = "gpt-4"
