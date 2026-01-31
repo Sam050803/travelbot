@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 
 from app.core.config import settings
 from app.core.database import init_db
-from.api import chat
+from app.api import chat
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
