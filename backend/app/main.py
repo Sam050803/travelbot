@@ -27,7 +27,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.add_middlewar(
+app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
