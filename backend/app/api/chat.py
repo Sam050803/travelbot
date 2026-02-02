@@ -60,6 +60,6 @@ async def get_conversation(
     except HTTPException as e:
         print(f"❌ Erreur /api/conversations/{conversation_id} : {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=e.status_code,
             detail=str(e)
         )

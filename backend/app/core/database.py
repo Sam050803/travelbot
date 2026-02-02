@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from typing import Generator
 
@@ -30,6 +30,20 @@ def get_db() -> Generator[Session, None, None]:
         
 def init_db() -> None:
     from app.models import user, conversation, message
+    from app.models.user import User
     
     Base.metadata.create_all(bind=engine)
+    
+    # Créer un utilisateur de démo si aucun n'existe
+    db = SessionLocal()
+    try:
+        existing_user = db.query(User).first()
+        if not existing_user:
+            demo_user = User(email="demo@travelbot.local", name="Utilisateur Demo")
+            db.add(demo_user)
+            db.commit()
+            print("👤 Utilisateur de démo créé (id=1)")
+    finally:
+        db.close()
+    
     print("*******Base de données initialisée*******")

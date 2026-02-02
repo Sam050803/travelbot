@@ -53,15 +53,15 @@ class ChatbotService:
         )
         
         # 4. Obtenir une réponse de l'IA
-        bot_response = self.langchain_service.get_response(
+        bot_response = await self.langchain_service.get_response(
             message=message, 
             conversation_history=history
         )
         
         # 5. Sauvegarder la réponse du bot
         self.conversation_repository.add_message(
-            message=bot_response,
             conversation_id=conversation.id,
+            content=bot_response,
             is_bot=True
         )
         

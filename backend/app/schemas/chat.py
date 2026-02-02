@@ -6,7 +6,7 @@ et retourne en sortie. Pydantic valide automatiquement — si les données
 ne correspondent pas, FastAPI retourne une erreur 422 détaillée.
 """
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from typing import Optional
 from datetime import datetime, timezone
 
@@ -40,21 +40,20 @@ class ChatRequest(BaseModel):
         description="L'ID de la conversation existante, ou none pour une nouvelle conversation.",
     )
     
-    @validator('message')
+    @field_validator('message')
     def message_not_empty(cls, v):
         if not v.strip():
             raise ValueError('Le message ne peut pas être vide.')
         return v.strip()
     
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "message": "Quelle sont les meilleures activités à Nice ?",
-                "user_id": 1,
-                "conversation_id": None,
-            }
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "message": "Quelle sont les meilleures activités à Nice ?",
+            "user_id": 1,
+            "conversation_id": None,
         }
-    
+    })
+
 class ChatResponse(BaseModel):    
     """
     Ce que l'API retourne après d'avoir traité le message.
@@ -77,24 +76,20 @@ class ChatResponse(BaseModel):
     )
     
     timestamp: datetime = Field(
-        default_factory=lambda:datetime.now(timezone.utc),
+        default_factory=lambda: datetime.now(timezone.utc),
         description="Horodatage UTC de la réponse.",
     )
-    
+
 class MessageSchema(BaseModel):
     id: int
     content: str
     is_bot: bool
     created_at: datetime
-    
-    class Config:
-        from_attributes = True
-    
+    model_config = ConfigDict(from_attributes=True)
+
 class ConversationSchema(BaseModel):
     id: int
     user_id: int
     created_at: datetime
     messages: list[MessageSchema] = []  # Liste des messages dans la conversation
-    
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

@@ -31,7 +31,7 @@ class ConversationRepository:
             Conversation.created_at.desc()
         ).limit(limit).all()
         
-    def delete_coversation(self, conversation_id: int)-> bool:
+    def delete_conversation(self, conversation_id: int)-> bool:
         """Supprime une conversation (et ses messages via CASCADE). Retourne True si succès."""
         conversation = self.get_conversation(conversation_id)
         if not conversation:
@@ -86,3 +86,8 @@ class ConversationRepository:
             self.db.commit()
             self.db.refresh(user)
         return user
+    
+    def get_conversation_messages(self, conversation_id: int, limit: int = 50):
+        """Retourne les messages d'une conversation sous forme de dictionnaires."""
+        messages = self.get_messages(conversation_id, limit=limit)
+        return [msg.to_dict() for msg in messages]
